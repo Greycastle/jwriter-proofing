@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { ref } from 'vue'
+import Airtable from 'airtable'
 
 import Text from './components/Text.vue';
 
@@ -45,10 +46,34 @@ function selectParagraph(index: number) {
   selectedParagraph.value = index
 }
 
+const loading = ref(false)
+
+const urlParams = new URLSearchParams(window.location.search);
+const articleId = urlParams.get('articleId')
+const apiKey = urlParams.get('apiKey')
+if (articleId && apiKey) {
+  
+  loading.value = true
+  const base = new Airtable({apiKey: apiKey}).base('appro7gNKkQZdEoXZ');
+  base('Submissions').find(articleId, function(err: any, record: any) {
+    if(err) {
+      console.error(err)
+      return
+    }
+    english.value = record['fields']['English']
+    original.value = record['fields']['Japanese']
+    proofed.value = record['fields']['Japanese (Reviewed)'] || original.value
+    loading.value = false
+  })
+}
+
 </script>
 
 <template>
-  <div class="parts">
+  <div v-if="loading">
+    Just a sec, I'm loading your article now..
+  </div>
+  <div v-else class="parts">
     <Text :text="english" :selectedParagraph="selectedParagraph"></Text>
     <Text :text="proofed" :original="original" :selectedParagraph="selectedParagraph"></Text>
     <Text :text="proofed" v-on:updated="updated" v-on:selected="selectParagraph"></Text>
