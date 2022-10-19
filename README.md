@@ -1,16 +1,27 @@
-# Vue 3 + TypeScript + Vite
+# Proof reading tool
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is a small tool for [JWriter](https://japapps.com) proof-readers to help them annotate articles with what was updated.
 
-## Recommended IDE Setup
+It as a prefilled example so you can load it just as is but, it is wired up to an Airtable backend to load articles from.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+To avoid storing any sensitive data in this repo, the api key and article id is passed in through the URL. This is also far from great as it an be sniffed way too easily but, for now it will do. Later I intend to read this API key from a configuration store once a user is logged in.
 
-## Type Support For `.vue` Imports in TS
+![Example of how the app looks](example.png)
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+## Running it
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+This app is built with Vue3 composition API, typescript on top of Vite. Run it with:
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+```
+npm install
+npm run dev
+```
+
+## Deployment
+
+The app is deployed on [https://jwriter-proofing.vercel.app/](https://jwriter-proofing.vercel.app/) using Vercel.
+
+
+## Contact
+
+Reach me at [https://greycastle.se](https://greycastle.se), [linkedin](https://www.linkedin.com/in/david-dikman-52479166/) or [twitter](https://twitter.com/almundgrey)
