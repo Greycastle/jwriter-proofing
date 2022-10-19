@@ -22,6 +22,6 @@ npm run dev
 The app is deployed on [https://jwriter-proofing.vercel.app/](https://jwriter-proofing.vercel.app/) using Vercel.
 
 
-## Contact
+## Contact
 
 Reach me at [https://greycastle.se](https://greycastle.se), [linkedin](https://www.linkedin.com/in/david-dikman-52479166/) or [twitter](https://twitter.com/almundgrey)
