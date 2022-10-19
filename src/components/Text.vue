@@ -17,7 +17,7 @@ const props = defineProps({
   }
 })
 
-const paragraphs = computed(() => {
+const paragraphs = computed<any[]>(() => {
   const ps = props.text.split('\n\n')
   if (props.original) {
     const originalPs = props.original.split('\n\n')
