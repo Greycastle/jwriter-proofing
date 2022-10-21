@@ -39,7 +39,6 @@ const selectedParagraph = ref(-1)
 
 function updated(text: string) {
   proofed.value = text
-  console.log('Updated', text)
 }
 
 function selectParagraph(index: number) {

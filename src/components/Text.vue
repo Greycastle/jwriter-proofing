@@ -53,8 +53,8 @@ function bindValue(event: Event, index: number) {
   const target = event.target as HTMLInputElement
   const text = [ ...paragraphs.value ]
   text[index] = target.innerText
-  emit('updated', text.join('\n\n'))
   emit('selected', -1)
+  emit('updated', text.join('\n\n'))
 }
 
 const copied = ref(false)
@@ -71,7 +71,7 @@ function copy() {
 
 <template>
   <div class="text-block">
-    <p v-for="content, index of paragraphs" v-bind:class="{ 'seleted': selectedParagraph === index, 'copied': copied }" v:key="content" contenteditable="true" v-on:focus="emit('selected', index)" v-on:blur="bindValue($event, index)">
+    <p v-for="content, index of paragraphs" v-bind:class="{ 'selected': selectedParagraph === index, 'copied': copied }" v:key="content" contenteditable="true" v-on:focus="emit('selected', index)" v-on:blur="bindValue($event, index)">
       <span v-if="isString(content)">{{ content }}</span>
       <div v-else>
         <span v-for="part of content" v:key="part.value" :class="getClass(part)">{{ part.value }}</span>
