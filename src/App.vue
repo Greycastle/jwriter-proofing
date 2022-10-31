@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
 import { ref } from 'vue'
-import Airtable from 'airtable'
 
 import Text from './components/Text.vue';
+import AppButton from './components/AppButton.vue';
+import { getAirtableService, getSubmission } from './services/airtable';
 
 const english = ref(`Furikake every morning
 
@@ -53,17 +54,28 @@ const apiKey = urlParams.get('apiKey')
 if (articleId && apiKey) {
   
   loading.value = true
-  const base = new Airtable({apiKey: apiKey}).base('appro7gNKkQZdEoXZ');
-  base('Submissions').find(articleId, function(err: any, record: any) {
-    if(err) {
-      console.error(err)
-      return
-    }
-    english.value = record['fields']['English']
-    original.value = record['fields']['Japanese']
-    proofed.value = record['fields']['Japanese (Reviewed)'] || original.value
+  getSubmission(getAirtableService(apiKey), articleId).then((article) => {
+    english.value = article.english
+    original.value = article.original
+    proofed.value = article.proofed
+  }).catch((error: any) => {
+    console.error(error)
+  }).finally(() => {
     loading.value = false
   })
+}
+
+function reset() {
+  alert('Resetting the proof-read to the original text, this has not been saved yet.')
+  proofed.value = original.value
+}
+
+function save() {
+  alert('Changes have been saved.')
+}
+
+function send() {
+  alert('Thank you! The author will now be notified that their article has been proof-read.')
 }
 
 </script>
@@ -72,14 +84,50 @@ if (articleId && apiKey) {
   <div v-if="loading">
     Just a sec, I'm loading your article now..
   </div>
-  <div v-else class="parts">
-    <Text :text="english" :selectedParagraph="selectedParagraph"></Text>
-    <Text :text="proofed" :original="original" :selectedParagraph="selectedParagraph"></Text>
-    <Text :text="proofed" v-on:updated="updated" v-on:selected="selectParagraph"></Text>
+  <div v-else>
+    <div class="parts">
+      <Text title="Final text" :text="proofed" v-on:updated="updated" v-on:selected="selectParagraph"></Text>
+      <Text title="Submitted with changes" :text="proofed" :original="original" :selectedParagraph="selectedParagraph"></Text>
+      <Text title="English text" :text="english" :selectedParagraph="selectedParagraph"></Text>
+    </div>
+    <div class="footer">
+      <div class="left-align">
+        <AppButton type="destructive" @click="reset">Reset</AppButton>
+      </div>
+      <div class="right-align">
+        <AppButton type="secondary" @click="save">Save</AppButton>
+        <AppButton type="primary" @click="send">Send</AppButton>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.footer {
+  position: fixed;
+  bottom: 0px;
+  display: flex;
+  width: 100%;
+  max-width: 1280px;
+  margin: 12px 0px;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.footer .left-align {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.footer .right-align {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 .parts {
   display: flex;
   flex-direction: row;

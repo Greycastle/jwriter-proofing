@@ -3,6 +3,10 @@ import { ref, computed } from 'vue'
 import { diffChars } from 'diff'
 
 const props = defineProps({
+  title: {
+    type: String,
+    required: true
+  },
   text: {
     type: String,
     required: true
@@ -67,10 +71,18 @@ function copy() {
   }, 500)
 }
 
+const noChanges = computed(() => {
+  return props.original && props.original === props.text
+})
+
 </script>
 
 <template>
   <div class="text-block">
+    <h2>{{ title }}</h2>
+    <div class="alert" v-if="noChanges">
+      No changes
+    </div>
     <p v-for="content, index of paragraphs" v-bind:class="{ 'selected': selectedParagraph === index, 'copied': copied }" v:key="content" contenteditable="true" v-on:focus="emit('selected', index)" v-on:blur="bindValue($event, index)">
       <span v-if="isString(content)">{{ content }}</span>
       <div v-else>
