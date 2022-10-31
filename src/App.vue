@@ -90,7 +90,7 @@ function send() {
       <Text title="Submitted with changes" :text="proofed" :original="original" :selectedParagraph="selectedParagraph"></Text>
       <Text title="English text" :text="english" :selectedParagraph="selectedParagraph"></Text>
     </div>
-    <div class="footer">
+    <div class="footer" v-if="false">
       <div class="left-align">
         <AppButton type="destructive" @click="reset">Reset</AppButton>
       </div>
