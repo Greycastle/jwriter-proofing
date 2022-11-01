@@ -86,7 +86,7 @@ function send() {
   </div>
   <div v-else>
     <div class="parts">
-      <Text title="Final text" :text="proofed" v-on:updated="updated" v-on:selected="selectParagraph"></Text>
+      <Text :editable="true" title="Edit here" :text="proofed" v-on:updated="updated" v-on:selected="selectParagraph"></Text>
       <Text title="Submitted with changes" :text="proofed" :original="original" :selectedParagraph="selectedParagraph"></Text>
       <Text title="English text" :text="english" :selectedParagraph="selectedParagraph"></Text>
     </div>

@@ -4,6 +4,10 @@ defineProps({
   type: {
     type: String,
     default: 'primary'
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -12,7 +16,7 @@ defineEmits(['click'])
 </script>
 
 <template>
-    <button :class="type" @click="$emit('click')"><slot></slot></button>
+    <button :disabled="disabled" :class="type" @click="$emit('click')"><slot></slot></button>
 </template>
 
 <style scoped>
@@ -28,6 +32,11 @@ button {
 
 button:focus {
   outline: none;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: default;
 }
 
 button.primary {
