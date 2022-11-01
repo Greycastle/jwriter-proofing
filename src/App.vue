@@ -4,7 +4,7 @@ import { ref } from 'vue'
 
 import Text from './components/Text.vue';
 import AppButton from './components/AppButton.vue';
-import { getAirtableService, getSubmission } from './services/airtable';
+import { AirtableService, getAirtableService, getSubmission, saveSubmission } from './services/airtable';
 
 const english = ref(`Furikake every morning
 
@@ -51,8 +51,15 @@ const loading = ref(false)
 const urlParams = new URLSearchParams(window.location.search);
 const articleId = urlParams.get('articleId')
 const apiKey = urlParams.get('apiKey')
+
+let airtable: AirtableService | null = null
+const canSave = ref(false)
+if (apiKey) {
+  airtable = getAirtableService(apiKey)
+  canSave.value = true
+}
+
 if (articleId && apiKey) {
-  
   loading.value = true
   getSubmission(getAirtableService(apiKey), articleId).then((article) => {
     english.value = article.english
@@ -70,8 +77,16 @@ function reset() {
   proofed.value = original.value
 }
 
-function save() {
-  alert('Changes have been saved.')
+const saving = ref(false)
+async function save() {
+  if (airtable && articleId) {
+    saving.value = true
+    await saveSubmission(airtable, articleId, proofed.value)
+    alert('Changes have been saved.')
+    saving.value = false
+  } else {
+    console.error('No valid article or API key are set.')
+  }
 }
 
 function send() {
@@ -81,37 +96,55 @@ function send() {
 </script>
 
 <template>
-  <div v-if="loading">
+  <div v-if="loading" class="loader">
     Just a sec, I'm loading your article now..
   </div>
   <div v-else>
-    <div class="parts">
-      <Text :editable="true" title="Edit here" :text="proofed" v-on:updated="updated" v-on:selected="selectParagraph"></Text>
-      <Text title="Submitted with changes" :text="proofed" :original="original" :selectedParagraph="selectedParagraph"></Text>
-      <Text title="English text" :text="english" :selectedParagraph="selectedParagraph"></Text>
+    <div class="page-container">
+      <div class="parts">
+        <Text :editable="true" title="Edit here" :text="proofed" v-on:updated="updated" v-on:selected="selectParagraph"></Text>
+        <Text title="Submitted with changes" :text="proofed" :original="original" :selectedParagraph="selectedParagraph"></Text>
+        <Text title="English text" :text="english" :selectedParagraph="selectedParagraph"></Text>
+      </div>
     </div>
-    <div class="footer" v-if="false">
-      <div class="left-align">
+    <div class="footer" v-if="canSave">
+      <div class="left-align" v-if="false">
         <AppButton type="destructive" @click="reset">Reset</AppButton>
       </div>
       <div class="right-align">
-        <AppButton type="secondary" @click="save">Save</AppButton>
-        <AppButton type="primary" @click="send">Send</AppButton>
+        <AppButton type="secondary" :disabled="saving" @click="save">{{ saving ? 'Saving..' : 'Save' }}</AppButton>
+        <AppButton type="primary" v-if="false" @click="send">Send</AppButton>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+
+.loader {
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+}
+
+.page-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
 .footer {
   position: fixed;
   bottom: 0px;
+  left: 0;
+  right: 0;
   display: flex;
-  width: 100%;
-  max-width: 1280px;
-  margin: 12px 0px;
+  padding: 12px 32px;
   justify-content: space-between;
   align-items: stretch;
+  background: white;
+  border-top: 1px solid rgb(223, 223, 223);
 }
 
 .footer .left-align {

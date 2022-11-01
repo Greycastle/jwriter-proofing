@@ -1,6 +1,6 @@
 import Airtable from "airtable";
 
-abstract class AirtableService {
+export abstract class AirtableService {
     apiKey: string
  
     constructor(apiKey: string) {
@@ -26,10 +26,14 @@ export abstract class ArticleEntry {
     }
 }
 
-export async function getSubmission(service: AirtableService, articleId: string) : Promise<ArticleEntry> {
+function getSubmissionsBase(service: AirtableService) {
     const base = new Airtable({apiKey: service.apiKey}).base('appro7gNKkQZdEoXZ');
+    return base('Submissions')
+}
+
+export async function getSubmission(service: AirtableService, articleId: string) : Promise<ArticleEntry> {
     return new Promise((resolve, reject) => {
-        base('Submissions').find(articleId, function(err: any, record: any) {
+        getSubmissionsBase(service).find(articleId, function(err: any, record: any) {
             if (err) {
                 reject(err)
             } else {
@@ -41,5 +45,11 @@ export async function getSubmission(service: AirtableService, articleId: string)
                 })
             }
         })
+    })
+}
+
+export async function saveSubmission(service: AirtableService, articleId: string, proofreadText: string) {
+    await getSubmissionsBase(service).update(articleId, {
+        'Japanese (Reviewed)': proofreadText
     })
 }
