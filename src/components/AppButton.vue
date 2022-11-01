@@ -40,37 +40,37 @@ button:disabled {
 }
 
 button.primary {
-  background-color: #2F80ED;
+  background-color: var(--primary-color);
   color: white;
 }
 
 button.primary:hover {
-  background-color: #74b0ff;
+  background-color: var(--primary-weak-color);
   color: white;
   transition: ease-in-out 0.05s;
 }
 
 button.secondary {
-  color: #2F80ED;
-  border: 1px solid #2F80ED;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
   background-color: white;
 }
 
 button.secondary:hover {
-  color: #74b0ff;
-  border: 1px solid #74b0ff;
+  color: var(--primary-weak-color);
+  border: 1px solid var(--primary-weak-color);
   background-color: white;
   transition: ease-in-out 0.05s;
 }
 
 button.destructive {
-  background-color: #EB5757;
+  background-color: var(--destructive-color);
   color: white;
   transition: ease-in-out 0.05s;
 }
 
 button.destructive:hover {
-  background-color: #e88b8b;
+  background-color: var(--destructive-weak-color);
 }
 
 </style>

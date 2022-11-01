@@ -84,7 +84,10 @@ const noChanges = computed(() => {
 
 <template>
   <div class="text-block">
-    <h2>{{ title }}</h2>
+    <h2>
+      {{ title }}
+      <a v-if="editable" v-on:click="copy" :class="{ 'disabled': copied  }" class="text-link">{{ copied ? 'copied..' : 'copy' }}</a>
+    </h2>
     <div class="alert" v-if="noChanges">
       No changes
     </div>
@@ -94,11 +97,21 @@ const noChanges = computed(() => {
         <span v-for="part of content" v:key="part.value" :class="getClass(part)">{{ part.value }}</span>
       </div>
     </p>
-    <AppButton v-if="editable" v-on:click="copy" :disabled="copied">{{ copied ? 'copied..' : 'copy' }}</AppButton>
   </div>
 </template>
 
 <style scoped>
+
+h2 .text-link {
+  font-size: 0.6em;
+  margin-left: 1em;
+  cursor: pointer;
+}
+
+h2 .text-link.disabled {
+  cursor: default;
+  opacity: 0.4;
+}
 
 .text-block {
   display: flex;
