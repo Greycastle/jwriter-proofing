@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppButton from './AppButton.vue'
 import { ref, computed } from 'vue'
 import { diffChars } from 'diff'
 
@@ -6,6 +7,10 @@ const props = defineProps({
   title: {
     type: String,
     required: true
+  },
+  editable: {
+    type: Boolean,
+    default: false
   },
   text: {
     type: String,
@@ -83,13 +88,13 @@ const noChanges = computed(() => {
     <div class="alert" v-if="noChanges">
       No changes
     </div>
-    <p v-for="content, index of paragraphs" v-bind:class="{ 'selected': selectedParagraph === index, 'copied': copied }" v:key="content" contenteditable="true" v-on:focus="emit('selected', index)" v-on:blur="bindValue($event, index)">
+    <p v-for="content, index of paragraphs" v-bind:class="{ 'selected': selectedParagraph === index, 'copied': copied }" v:key="content" :contenteditable="editable" v-on:focus="emit('selected', index)" v-on:blur="bindValue($event, index)">
       <span v-if="isString(content)">{{ content }}</span>
       <div v-else>
         <span v-for="part of content" v:key="part.value" :class="getClass(part)">{{ part.value }}</span>
       </div>
     </p>
-    <button v-on:click="copy" :disabled="copied">{{ copied ? 'copied..' : 'copy' }}</button>
+    <AppButton v-if="editable" v-on:click="copy" :disabled="copied">{{ copied ? 'copied..' : 'copy' }}</AppButton>
   </div>
 </template>
 
@@ -146,7 +151,6 @@ const noChanges = computed(() => {
 .added {
   background-color: rgb(182, 255, 182);
   padding: 0 4px;
-
 }
 
 </style>
