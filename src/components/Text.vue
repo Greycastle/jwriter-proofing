@@ -86,7 +86,7 @@ const noChanges = computed(() => {
   <div class="text-block">
     <h2>
       {{ title }}
-      <a v-if="editable" v-on:click="copy" :class="{ 'disabled': copied  }" class="text-link">{{ copied ? 'copied..' : 'copy' }}</a>
+      <a v-if="editable" v-on:click="copy" :class="{ 'disabled': copied  }" class="text-link">{{ copied ? 'copied..' : 'copy all' }}</a>
     </h2>
     <div class="alert" v-if="noChanges">
       No changes
