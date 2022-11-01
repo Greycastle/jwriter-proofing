@@ -2,6 +2,7 @@
 
 import { ref } from 'vue'
 
+import AppSpinner from './components/AppSpinner.vue'
 import Text from './components/Text.vue';
 import AppButton from './components/AppButton.vue';
 import { AirtableService, getAirtableService, getSubmission, saveSubmission } from './services/airtable';
@@ -96,9 +97,9 @@ function send() {
 </script>
 
 <template>
-  <div v-if="loading" class="loader">
+  <AppSpinner v-if="true">
     Just a sec, I'm loading your article now..
-  </div>
+  </AppSpinner>
   <div v-else>
     <div class="page-container">
       <div class="parts">
