@@ -5,7 +5,7 @@ import { ref } from 'vue'
 import AppSpinner from '@/components/AppSpinner.vue'
 import Text from '@/components/Text.vue';
 import AppButton from '@/components/AppButton.vue';
-import { AirtableService, getAirtableService, getSubmission, saveSubmission } from '@/services/airtable.ts';
+import { AirtableService, getAirtableService, getSubmission, saveSubmission, ArticleEntry } from '@/services/airtable';
 
 const english = ref(`Furikake every morning
 
@@ -62,7 +62,7 @@ if (apiKey) {
 
 if (articleId && apiKey) {
   loading.value = true
-  getSubmission(getAirtableService(apiKey), articleId).then((article) => {
+  getSubmission(getAirtableService(apiKey), articleId).then((article: ArticleEntry) => {
     english.value = article.english
     original.value = article.original
     proofed.value = article.proofed
