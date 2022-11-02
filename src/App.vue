@@ -97,7 +97,7 @@ function send() {
 </script>
 
 <template>
-  <AppSpinner v-if="true">
+  <AppSpinner v-if="loading">
     Just a sec, I'm loading your article now..
   </AppSpinner>
   <div v-else>
