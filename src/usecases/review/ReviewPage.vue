@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 
 import AppSpinner from '@/components/AppSpinner.vue'
+import AppTextDifference from '@/components/AppTextDifference.vue';
 import { ArticleEntry, getAirtableService, getSubmission } from '@/services/airtable';
 import { useRouteParams, useRouteQuery } from '@vueuse/router'
 
@@ -43,7 +44,7 @@ loadArticle()
         </div>
         <div v-else>
             <h1>Your submission</h1>
-            <p>{{ submission.english }}</p>
+            <AppTextDifference :original="submission.original" :edited="submission.proofed" />
         </div>
     </div>
 </template>
