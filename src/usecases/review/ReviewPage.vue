@@ -95,7 +95,7 @@ const paragraphs = computed<{ original: string[], proofed: string[] }>(() => {
 <style scoped>
 
 .with-whitespace {
-    white-space: pre;
+    white-space: pre-wrap;
 }
 
 .content {
