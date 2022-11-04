@@ -128,13 +128,6 @@ function send() {
   justify-content: space-around;
 }
 
-.page-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
 .footer {
   position: fixed;
   bottom: 0px;
