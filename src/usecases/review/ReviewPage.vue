@@ -70,7 +70,9 @@ const paragraphs = computed<{ original: string[], proofed: string[] }>(() => {
                         <label><input value="proofed" v-model="displayMode" type="radio" />Proof-read version</label>
                     </legend>
                     <div v-if="displayMode === 'changes'">
-                        <AppTextDifference v-for="original, index in paragraphs.original"  :original="original" :edited="paragraphs.proofed[index]" />
+                        <p v-for="original, index in paragraphs.original">
+                            <AppTextDifference  :original="original" :edited="paragraphs.proofed[index]" />
+                        </p>
                     </div>
                     <div v-else-if="displayMode === 'submission'">
                         <p v-for="paragraph in paragraphs.original">{{ paragraph }}</p>

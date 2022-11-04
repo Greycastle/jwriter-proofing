@@ -30,9 +30,7 @@ const content = computed<any[]>(() => {
 </script>
 
 <template>
-    <p>
-      <span v-for="part of content" v:key="part.value" :class="getClass(part)">{{ part.value }}</span>
-    </p>
+    <span v-for="part of content" v:key="part.value" :class="getClass(part)">{{ part.value }}</span>
 </template>
 
 <style scoped>

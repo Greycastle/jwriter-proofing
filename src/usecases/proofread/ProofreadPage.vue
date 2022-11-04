@@ -1,51 +1,17 @@
 <script setup lang="ts">
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 import AppSpinner from '@/components/AppSpinner.vue'
-import Text from '@/components/Text.vue';
+import AppTextDifference from '@/components/AppTextDifference.vue';
 import AppButton from '@/components/AppButton.vue';
 import { AirtableService, getAirtableService, getSubmission, saveSubmission, ArticleEntry } from '@/services/airtable';
+import { getParagraphs } from '@/services/paragraphs';
+import { example } from '@/services/example';
 
-const english = ref(`Furikake every morning
-
-I eat rice every day since I moved to Japan. Rice and miso soup. I think this is very normal.
-
-However, if it is just rice, I feel a bit sad. Rice is tasty, but I want a bit more flavour.
-
-For this reason, we eat furikake on top of the rice. Furikake is something you put on top of the rice. There are many different types of furikake, but my preference is Mishima furikake. This furikake is made from sesame seeds, dried eggs and fish.
-
-I think rice and miso soup is a very healthy breakfast. Please give it a try.`)
-
-const original = ref(`毎朝のふりかけ
-
-私は日本に引っ越してから毎日お米を食べます。お米と味噌汁。これはとても普通と思います。
-
-しかし、お米だけだと、ちょっと寂しいです。お米は美味しいですが、もうちょっと味が欲しいですね。
-
-そのために、お米の上にふりかけをかけて食べます。ふりかけはご飯の上に乗せるものです。ふりかけは色々な種類がありますが、私のお好みはMishimaのふりかけです。このふりかけはごま、乾いた卵と魚で作られています。
-
-お米と味噌汁はとても健康な朝ご飯だと思います。ぜひ試してみてください。`)
-
-const proofed = ref(`毎朝のふりかけ
-
-私は日本に引っ越してから毎日お米を食べます。お米と味噌汁。これはとても普通だと思います。
-
-しかし、お米だけだと、ちょっと寂しいです。お米は美味しいですが、もうちょっと味が欲しいですね。
-
-なので、お米の上にふりかけをかけて食べます。ふりかけはご飯の上に乗せるものです。ふりかけは色々な種類がありますが、私のお好みはMishimaのふりかけです。このふりかけは、ごま、乾燥させた卵と魚で作られています。
-
-お米と味噌汁はとても健康的な朝ご飯だと思います。ぜひ試してみてください。`)
-
-const selectedParagraph = ref(-1)
-
-function updated(text: string) {
-  proofed.value = text
-}
-
-function selectParagraph(index: number) {
-  selectedParagraph.value = index
-}
+const english = ref(example.english)
+const original = ref(example.original)
+const proofed = ref(example.proofed)
 
 const loading = ref(false)
 
@@ -94,6 +60,21 @@ function send() {
   alert('Thank you! The author will now be notified that their article has been proof-read.')
 }
 
+const paragraphs = computed<{ proofed: string[], original: string[], english: string[] }>(() => {
+  return {
+    english: getParagraphs(english.value),
+    original: getParagraphs(original.value),
+    proofed: getParagraphs(proofed.value)
+  }
+})
+
+function bindValue(event: Event, index: number) {
+  const target = event.target as HTMLInputElement
+  const updated = [ ...paragraphs.value.proofed ]
+  updated[index] = target.innerText
+  proofed.value = updated.join('\n\n')
+}
+
 </script>
 
 <template>
@@ -103,9 +84,32 @@ function send() {
   <div v-else>
     <div class="page-container">
       <div class="parts">
-        <Text :editable="true" title="Edit here" :text="proofed" v-on:updated="updated" v-on:selected="selectParagraph"></Text>
-        <Text title="Submitted with changes" :text="proofed" :original="original" :selectedParagraph="selectedParagraph"></Text>
-        <Text title="English text" :text="english" :selectedParagraph="selectedParagraph"></Text>
+         <table>
+          <thead>
+            <tr>
+              <th>
+                  <h2>Proofread</h2>
+                  <span>Edit this content! You will see the changes to the right once you tap outside the text.</span>
+                  &nbsp;<a href="action:copy">[copy text]</a>
+              </th>
+              <th>
+                  <h2>Changes</h2>
+                  <span>See what has been changed here, strikethrough is removed and green is added.</span>
+              </th>
+              <th>
+                  <h2>English</h2>
+                  <span>Use the English translation to check what the writer actually wanted to write if the Japanese is hard to read.</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="proofread, index of paragraphs.proofed">
+              <td><p contenteditable="true" v-on:blur="bindValue($event, index)">{{ proofread }}</p></td>
+              <td><AppTextDifference :original="paragraphs.original[index]" :edited="proofread"/></td>
+              <td><p>{{ paragraphs.english[index] }}</p></td>
+            </tr>
+          </tbody>
+         </table>
       </div>
     </div>
     <div class="footer" v-if="canSave">
@@ -121,6 +125,40 @@ function send() {
 </template>
 
 <style scoped>
+
+td p:focus {
+  outline: none;
+}
+
+th span, th a {
+  font-size: 0.8em;
+  color: #666;
+}
+
+tbody td p {
+  white-space: pre-wrap;
+}
+
+tbody tr:focus-within, tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+table {
+  border-spacing: 0em;  
+}
+
+thead tr th {
+  border-bottom: 1px solid #ddd;
+}
+
+th, td {
+  text-align: left;
+  vertical-align: top;
+}
+
+th:not(:last-child), td:not(:last-child) {
+  padding-right: 1em;
+}
 
 .loader {
   display: flex;
