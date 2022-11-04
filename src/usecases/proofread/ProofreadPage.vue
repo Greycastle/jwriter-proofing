@@ -75,6 +75,16 @@ function bindValue(event: Event, index: number) {
   proofed.value = updated.join('\n\n')
 }
 
+const copied = ref(false)
+
+function copy() {
+  navigator.clipboard.writeText(proofed.value)
+  copied.value = true 
+  setTimeout(() => {
+    copied.value = false
+  }, 500)
+}
+
 </script>
 
 <template>
@@ -90,7 +100,7 @@ function bindValue(event: Event, index: number) {
               <th>
                   <h2>Proofread</h2>
                   <span>Edit this content! You will see the changes to the right once you tap outside the text.</span>
-                  &nbsp;<a href="action:copy">[copy text]</a>
+                  &nbsp;<a href="action:copy" :class="{'disabled': copied}" @click="copy">[ {{ copied ? 'copied..' : 'copy text' }} ]</a>
               </th>
               <th>
                   <h2>Changes</h2>
