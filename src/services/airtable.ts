@@ -24,6 +24,7 @@ export abstract class ArticleEntry {
         this.english = english
         this.original = original
         this.proofed = proofed
+        this.comment = comment
     }
 }
 
