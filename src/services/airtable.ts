@@ -18,11 +18,13 @@ export abstract class ArticleEntry {
     english: string;
     original: string;
     proofed: string;
+    comment: string;
 
-    constructor(english: string, original: string, proofed: string) {
+    constructor(english: string, original: string, proofed: string, comment: string) {
         this.english = english
         this.original = original
         this.proofed = proofed
+        this.comment = comment
     }
 }
 
@@ -41,7 +43,8 @@ export async function getSubmission(service: AirtableService, articleId: string)
                 resolve({
                     english: record['fields']['English'],
                     original: original,
-                    proofed: record['fields']['Japanese (Reviewed)'] || original
+                    proofed: record['fields']['Japanese (Reviewed)'] || original,
+                    comment: record['fields']['Comments to submitter']
                 })
             }
         })

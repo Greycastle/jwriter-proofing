@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
+import TheUserHeader from '@/components/TheUserHeader.vue'
 import AppSpinner from '@/components/AppSpinner.vue'
 import AppTextDifference from '@/components/AppTextDifference.vue';
 import { ArticleEntry, getAirtableService, getSubmission } from '@/services/airtable';
@@ -48,39 +49,54 @@ const paragraphs = computed<{ original: string[], proofed: string[] }>(() => {
 
 <template>
     <AppSpinner v-if="loading">Loading article..</AppSpinner>
-    <div class="page-container" v-else>
-        <div v-if="error">
-            <h1>Failed</h1>
-            <p>
-                Sorry, we failed to find or load your article. Please check the URL and try again.
-            </p>
-            <p>
-                If it still doesn't work <a href="mailto:ddikman@gmail.com">send us an email.</a>
-            </p>
-        </div>
-        <div class="content" v-else>
-            <h1>Your submission</h1>
-            <fieldset>
-                <legend>
-                    <label><input value="changes" v-model="displayMode" type="radio" />With changes</label>
-                    <label><input value="submission" v-model="displayMode" type="radio" />Your submission</label>
-                    <label><input value="proofed" v-model="displayMode" type="radio" />Proof-read version</label>
-                </legend>
-                <div v-if="displayMode === 'changes'">
-                    <AppTextDifference v-for="original, index in paragraphs.original"  :original="original" :edited="paragraphs.proofed[index]" />
-                </div>
-                <div v-else-if="displayMode === 'submission'">
-                    <p v-for="paragraph in paragraphs.original">{{ paragraph }}</p>
-                </div>
-                <div v-else>
-                    <p v-for="paragraph in paragraphs.proofed">{{ paragraph }}</p>
-                </div>
-            </fieldset>
+    <div v-else>
+        <TheUserHeader></TheUserHeader>
+        <div class="page-container">
+            <div v-if="error">
+                <h1>Failed</h1>
+                <p>
+                    Sorry, we failed to find or load your article. Please check the URL and try again.
+                </p>
+                <p>
+                    If it still doesn't work <a href="mailto:ddikman@gmail.com">send us an email.</a>
+                </p>
+            </div>
+            <div class="content" v-else>
+                <h1>Your submission</h1>
+                <fieldset>
+                    <legend>
+                        <label><input value="changes" v-model="displayMode" type="radio" />With changes</label>
+                        <label><input value="submission" v-model="displayMode" type="radio" />Your submission</label>
+                        <label><input value="proofed" v-model="displayMode" type="radio" />Proof-read version</label>
+                    </legend>
+                    <div v-if="displayMode === 'changes'">
+                        <AppTextDifference v-for="original, index in paragraphs.original"  :original="original" :edited="paragraphs.proofed[index]" />
+                    </div>
+                    <div v-else-if="displayMode === 'submission'">
+                        <p v-for="paragraph in paragraphs.original">{{ paragraph }}</p>
+                    </div>
+                    <div v-else>
+                        <p v-for="paragraph in paragraphs.proofed">{{ paragraph }}</p>
+                    </div>
+                </fieldset>
+                <h2>Comment from reviewer</h2>
+                <p class="with-whitespace">
+                    {{ submission?.comment || 'No comment.' }}
+                </p>
+                <hr/>
+                <p>
+                    <a href="https://retha921.softr.app/your-articles">« Back to your list of articles</a>
+                </p>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+
+.with-whitespace {
+    white-space: pre-wrap;
+}
 
 .content {
     text-align: left
