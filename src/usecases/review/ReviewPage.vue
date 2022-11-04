@@ -81,7 +81,7 @@ const paragraphs = computed<{ original: string[], proofed: string[] }>(() => {
                 </fieldset>
                 <h2>Comment from reviewer</h2>
                 <p class="with-whitespace">
-                    {{ submission.comment }}
+                    {{ submission?.comment || 'No comment.' }}
                 </p>
                 <hr/>
                 <p>
