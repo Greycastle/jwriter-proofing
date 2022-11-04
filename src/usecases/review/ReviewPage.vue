@@ -31,14 +31,17 @@ async function loadArticle() {
 
 loadArticle()
 
-const paragraphs = computed(() => {
+const paragraphs = computed<{ original: string[], proofed: string[] }>(() => {
     if (submission.value) {
         return {
             original: getParagraphs(submission.value.original),
             proofed: getParagraphs(submission.value.proofed)
         }
     }
-    return []
+    return {
+        proofed: [],
+        original: []
+    }
 })
 
 </script>
