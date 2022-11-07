@@ -163,6 +163,7 @@ textarea {
   border-radius: 8px;
   width: 100%;
   height: 200px;
+  padding: 8px;
 }
 
 td p:focus {
