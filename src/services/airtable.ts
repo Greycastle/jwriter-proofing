@@ -51,6 +51,13 @@ export async function getSubmission(service: AirtableService, articleId: string)
     })
 }
 
+export async function submitComment(service: AirtableService, articleId: string, comment: string) {
+    await getSubmissionsBase(service).update(articleId, {
+        'Comments to submitter': comment,
+        'Status': 'Accepted'
+    })
+}
+
 export async function saveSubmission(service: AirtableService, articleId: string, proofreadText: string) {
     await getSubmissionsBase(service).update(articleId, {
         'Japanese (Reviewed)': proofreadText
