@@ -133,7 +133,7 @@ function copy() {
           <tbody>
             <tr v-for="proofread, index of paragraphs.proofed">
               <td><p contenteditable="true" v-on:blur="bindValue($event, index)">{{ proofread }}</p></td>
-              <td><AppTextDifference :original="paragraphs.original[index]" :edited="proofread"/></td>
+              <td><p><AppTextDifference :original="paragraphs.original[index]" :edited="proofread"/></p></td>
               <td><p>{{ paragraphs.english[index] }}</p></td>
             </tr>
           </tbody>
