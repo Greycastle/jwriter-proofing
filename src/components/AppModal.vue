@@ -15,14 +15,18 @@ function close() {
     emit('close')
 }
 
+function cancel() {
+    emit('cancel')
+}
+
 </script>
 
 <template>
-    <div class="modal-overlay" @click="close">
+    <div class="modal-overlay" @click="cancel">
         <div class="modal" @click.stop>
             <slot></slot>
             <div class="buttons">
-                <AppButton type="secondary" @click="$emit('cancel')">Cancel</AppButton>
+                <AppButton type="secondary" @click="cancel">Cancel</AppButton>
                 <AppButton @click="close">{{ closeLabel }}</AppButton>
             </div>
         </div>
