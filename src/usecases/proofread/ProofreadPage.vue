@@ -5,13 +5,15 @@ import { ref, computed } from 'vue'
 import AppSpinner from '@/components/AppSpinner.vue'
 import AppTextDifference from '@/components/AppTextDifference.vue';
 import AppButton from '@/components/AppButton.vue';
-import { AirtableService, getAirtableService, getSubmission, saveSubmission, ArticleEntry } from '@/services/airtable';
+import AppModal from '@/components/AppModal.vue';
+import { AirtableService, getAirtableService, getSubmission, saveSubmission, submitComment, ArticleEntry } from '@/services/airtable';
 import { getParagraphs } from '@/services/paragraphs';
 import { example } from '@/services/example';
 
 const english = ref(example.english)
 const original = ref(example.original)
 const proofed = ref(example.proofed)
+const comment = ref('')
 
 const loading = ref(false)
 
@@ -32,6 +34,7 @@ if (articleId && apiKey) {
     english.value = article.english
     original.value = article.original
     proofed.value = article.proofed
+    comment.value = article.comment
   }).catch((error: any) => {
     console.error(error)
   }).finally(() => {
@@ -56,8 +59,23 @@ async function save() {
   }
 }
 
-function send() {
+const showModal = ref(false)
+function openSendModal() {
+  showModal.value = true
+
+}
+
+async function sendComment() {
+  if (!airtable || !articleId) {
+    return
+  }
+  await submitComment(airtable, articleId, comment.value)
   alert('Thank you! The author will now be notified that their article has been proof-read.')
+  hideModal()
+}
+
+function hideModal() {
+  showModal.value = false
 }
 
 const paragraphs = computed<{ proofed: string[], original: string[], english: string[] }>(() => {
@@ -128,13 +146,24 @@ function copy() {
       </div>
       <div class="right-align">
         <AppButton type="secondary" :disabled="saving" @click="save">{{ saving ? 'Saving..' : 'Save' }}</AppButton>
-        <AppButton type="primary" v-if="false" @click="send">Send</AppButton>
+        <AppButton type="primary" @click="openSendModal">Send</AppButton>
       </div>
     </div>
   </div>
+  <AppModal closeLabel="Send" v-if="showModal" @close="sendComment" @cancel="hideModal">
+    <h3>Send with comment to author</h3>
+    <span class="comment-help">Add a comment to explain any changes you have done or so.</span>
+    <textarea v-model="comment"></textarea>
+  </AppModal>
 </template>
 
 <style scoped>
+
+textarea {
+  border-radius: 8px;
+  width: 100%;
+  height: 200px;
+}
 
 td p:focus {
   outline: none;
