@@ -239,4 +239,8 @@ th:not(:last-child), td:not(:last-child) {
   gap: 32px;
 }
 
+.page-container {
+  margin-bottom: 150px;
+}
+
 </style>
