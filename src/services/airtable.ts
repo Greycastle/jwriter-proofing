@@ -28,6 +28,22 @@ export abstract class ArticleEntry {
     }
 }
 
+export abstract class TrialEntry {
+    english: string;
+    translation: string;
+    email: string;
+    example: string;
+    expected: string;
+
+    constructor(english: string, translation: string, email: string, example: string, expected: string) {
+        this.english = english
+        this.translation = translation
+        this.email = email
+        this.example = example
+        this.expected = expected
+    }
+}
+
 function getSubmissionsBase(service: AirtableService) {
     const base = new Airtable({apiKey: service.apiKey}).base('appro7gNKkQZdEoXZ');
     return base('Submissions')
@@ -61,5 +77,20 @@ export async function submitComment(service: AirtableService, articleId: string,
 export async function saveSubmission(service: AirtableService, articleId: string, proofreadText: string) {
     await getSubmissionsBase(service).update(articleId, {
         'Japanese (Reviewed)': proofreadText
+    })
+}
+
+export async function saveTrial(service: AirtableService, trial: TrialEntry) {
+    await getSubmissionsBase(service).create({
+        'Name': trial.email,
+        'Title': 'Trial - ' + trial.example,
+        'English': trial.english,
+        'Japanese': trial.translation,
+        'Japanese (Reviewed)': trial.expected,
+        'Title (Reviewed)': 'Trial',
+        'Status': 'Accepted',
+        'Time taken': '0 min',
+        'Comments to submitter': 'Thank you for your trial. This is an automated response.',
+        'PaymentId': 'free'
     })
 }
