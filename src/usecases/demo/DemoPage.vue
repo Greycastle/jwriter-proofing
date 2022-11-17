@@ -188,13 +188,21 @@ const reset = () => {
 
 <style>
 
+button {
+    margin-top: 1rem;
+}
+
 button:not(:last-child) {
     margin-right: 1rem;
 }
 
 input[type="email"] {
-    width: 20rem;
+    max-width: 90%;
     margin-right: 1rem;
+    padding: 10px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--primary-weak-color);
+    font-size: 16px;
 }
 
 td p:focus {
