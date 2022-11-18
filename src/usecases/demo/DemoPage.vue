@@ -26,13 +26,11 @@ The restaurant was near Shinjuku station, and it was very busy.
 We had to queue for one hour before we could get in.
 
 But the food was very good. We ate sashimi and drank beer until late in the night.`],
-    ['I want to go to Japan', `Yesterday I met my friends, and we went to a restaurant.
+    ['I want to go to Japan', `I have always wanted to go to Japan. But it is very expensive.
 
-The restaurant was near Shinjuku station, and it was very busy.
+I am now working at a supermarket every evening after school and every weekend so that I may save money.
 
-We had to queue for one hour before we could get in.
-
-But the food was very good. We ate sashimi and drank beer until late in the night.`]
+Next year I hope that I will have enough to visit Japan.`]
 ])
 
 const correct = new Map<string, string>([
