@@ -1,13 +1,16 @@
 <script setup lang="ts">
 
 import AppButton from '@/components/AppButton.vue';
-import { getAirtableService, saveTrial } from '@/services/airtable';
+import { saveTrial } from '@/services/airtable';
 import { getParagraphs } from '@/services/paragraphs';
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 const SELECTED_DEMO_KEY = 'demo-selected-example';
 const WRITING_KEY = 'demo-writing';
 const EMAIL_KEY = 'demo-email';
+
+const router = useRouter();
 
 const selectedExample = ref<string | null>(null);
 
@@ -92,49 +95,33 @@ onMounted(() => {
     email.value = localStorage.getItem(EMAIL_KEY) || ''
 })
 
-const invalidEmail = computed(() => {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email.value) === false;
-})
-
-const submitted = ref(false);
 const working = ref(false)
+const error = ref<string | null>()
 
 const submit = async () => {
     try {
         working.value = true;
         localStorage.setItem(EMAIL_KEY, email.value)
-        const urlParams = new URLSearchParams(window.location.search);
-        const apiKey = urlParams.get('apiKey')!
-        const airtable = getAirtableService(apiKey)
-        await saveTrial(airtable, {
-            email: email.value,
+        const submissionId = await saveTrial({
             english: examples.get(selectedExample.value!) || '',
             translation: translation.value.join('\n\n'),
             example: selectedExample.value!,
             expected: correct.get(selectedExample.value!) || '',
             }
         )
-    } finally {
-        submitted.value = true;
-        working.value = false;
-    }
-}
 
-const reset = () => {
-    submitted.value = false
-    selectedExample.value = null
+        router.replace(`/review/${submissionId}`)
+    } catch (err) {
+        error.value = 'Something went wrong, please try again'
+        working.value = false;
+        console.error(err)
+    }
 }
 
 </script>
 
 <template>
-    <div v-if="submitted" class="page-container">
-        <h1>Thank you!</h1>
-        <p>Your translation has been registered, very soon you will have a link in your inbox!</p>
-        <AppButton @click="reset">Try another</AppButton>
-    </div>
-    <div v-else class="page-container">
+    <div class="page-container">
         <h1>
             Test your skills
         </h1>
@@ -171,10 +158,9 @@ const reset = () => {
             </div>
 
             <div>
-                <p>What email shall we send the result link to?</p>
-                <label>Email: <input type="email" name="email" v-model="email" /></label>
                 <AppButton :disabled="true" v-if="working">Submitting..</AppButton>
-                <AppButton v-else :disabled="invalidEmail" @click="submit">Submit</AppButton>
+                <AppButton v-else-if="!error" @click="submit">Submit</AppButton>
+                <p class="error" v-else>{{ error }}</p>
             </div>
         </div>
         <div v-else>
@@ -187,6 +173,10 @@ const reset = () => {
 </template>
 
 <style>
+
+.error {
+    color: red;
+}
 
 button {
     margin-top: 1rem;

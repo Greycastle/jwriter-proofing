@@ -17,6 +17,12 @@ npm install
 npm run dev
 ```
 
+### Environment settings
+
+To run this project, you will need to have an Airtable base setup and the settings for this base added to the `.env` file. Copy the `.env.example` to your own file to provide these to the runtime environment.
+
+If you have access to the Vercel project, you can also pull these values to your `.env` file by using `npx vercel env pull`.
+
 ## Deployment
 
 The app is deployed on [https://jwriter-proofing.vercel.app/](https://jwriter-proofing.vercel.app/) using Vercel.
