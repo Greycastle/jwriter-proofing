@@ -1,26 +1,23 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
-import TheUserHeader from '@/components/TheUserHeader.vue'
 import AppSpinner from '@/components/AppSpinner.vue'
 import AppTextDifference from '@/components/AppTextDifference.vue';
-import { ArticleEntry, getAirtableService, getSubmission } from '@/services/airtable';
-import { useRouteParams, useRouteQuery } from '@vueuse/router'
+import { ArticleEntry, getSubmission } from '@/services/airtable';
+import { useRouteParams } from '@vueuse/router'
 import { getParagraphs } from '@/services/paragraphs';
 
 const loading = ref(true)
 const error = ref<string | null>(null)
 
 const articleId = useRouteParams('articleId', '')
-const key = useRouteQuery('k')
 const submission = ref<ArticleEntry>()
 
 const displayMode = ref('changes')
 
 async function loadArticle() {
     try {
-        const service = getAirtableService(key.value as string)
-        submission.value = await getSubmission(service, articleId.value as string)
+        submission.value = await getSubmission(articleId.value as string)
     } catch (err : any) {
         console.error(err)
         error.value = err.toString()
@@ -50,7 +47,6 @@ const paragraphs = computed<{ original: string[], proofed: string[] }>(() => {
 <template>
     <AppSpinner v-if="loading">Loading article..</AppSpinner>
     <div v-else>
-        <TheUserHeader></TheUserHeader>
         <div class="page-container">
             <div v-if="error">
                 <h1>Failed</h1>
@@ -87,7 +83,7 @@ const paragraphs = computed<{ original: string[], proofed: string[] }>(() => {
                 </p>
                 <hr/>
                 <p>
-                    <a href="https://retha921.softr.app/your-articles">« Back to your list of articles</a>
+                    <a href="/">« Back to start page</a>
                 </p>
             </div>
         </div>

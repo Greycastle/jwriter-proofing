@@ -6,7 +6,7 @@ import AppSpinner from '@/components/AppSpinner.vue'
 import AppTextDifference from '@/components/AppTextDifference.vue';
 import AppButton from '@/components/AppButton.vue';
 import AppModal from '@/components/AppModal.vue';
-import { AirtableService, getAirtableService, getSubmission, saveSubmission, submitComment, ArticleEntry } from '@/services/airtable';
+import { getSubmission, saveSubmission, submitComment, ArticleEntry } from '@/services/airtable';
 import { getParagraphs } from '@/services/paragraphs';
 import { example } from '@/services/example';
 
@@ -19,18 +19,15 @@ const loading = ref(false)
 
 const urlParams = new URLSearchParams(window.location.search);
 const articleId = urlParams.get('articleId')
-const apiKey = urlParams.get('apiKey')
 
-let airtable: AirtableService | null = null
 const canSave = ref(false)
-if (apiKey) {
-  airtable = getAirtableService(apiKey)
+if (articleId) {
   canSave.value = true
 }
 
-if (articleId && apiKey) {
+if (articleId) {
   loading.value = true
-  getSubmission(getAirtableService(apiKey), articleId).then((article: ArticleEntry) => {
+  getSubmission(articleId).then((article: ArticleEntry) => {
     english.value = article.english
     original.value = article.original
     proofed.value = article.proofed
@@ -49,14 +46,14 @@ function reset() {
 
 const saving = ref(false)
 async function save() {
-  if (airtable && articleId) {
-    saving.value = true
-    await saveSubmission(airtable, articleId, proofed.value)
-    alert('Changes have been saved.')
-    saving.value = false
-  } else {
-    console.error('No valid article or API key are set.')
+  if (!articleId) {
+    return;
   }
+
+  saving.value = true
+  await saveSubmission(articleId, proofed.value)
+  alert('Changes have been saved.')
+  saving.value = false
 }
 
 const showModal = ref(false)
@@ -66,10 +63,10 @@ function openSendModal() {
 }
 
 async function sendComment() {
-  if (!airtable || !articleId) {
+  if (!articleId) {
     return
   }
-  await submitComment(airtable, articleId, comment.value)
+  await submitComment(articleId, comment.value)
   alert('Thank you! The author will now be notified that their article has been proof-read.')
   hideModal()
 }
