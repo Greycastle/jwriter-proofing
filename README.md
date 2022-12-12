@@ -21,7 +21,7 @@ npm run dev
 
 To run this project, you will need to have an Airtable base setup and the settings for this base added to the `.env` file. Copy the `.env.example` to your own file to provide these to the runtime environment.
 
-If you have access to the Vercel project, you can also pull these values to your `.env` file by using `npx vercel env pull && cp .vercel/.env.development.local .env`.
+If you have access to the Vercel project, you can also pull these values to your `.env` file by using `npx vercel env pull`.
 
 ## Deployment
 
