@@ -1,3 +1,7 @@
+# Archived
+
+This repo is not in use anymore and is only meant as a reference project.
+
 # Proof reading tool
 
 This is a small tool for [JWriter](https://japapps.com) proof-readers to help them annotate articles with what was updated.
@@ -25,7 +29,7 @@ If you have access to the Vercel project, you can also pull these values to your
 
 ## Deployment
 
-The app is deployed on [https://jwriter-proofing.vercel.app/](https://jwriter-proofing.vercel.app/) using Vercel.
+~The app is deployed on [https://jwriter-proofing.vercel.app/](https://jwriter-proofing.vercel.app/) using Vercel.~
 
 
 ## Contact
